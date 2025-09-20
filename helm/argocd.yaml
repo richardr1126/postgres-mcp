@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: postgres-mcp
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/richardr1126/postgres-mcp
+    targetRevision: main
+    path: helm/postgres-mcp
+    helm:
+      valueFiles:
+        - values.yaml
+      parameters:
+        - name: image.pullPolicy
+          value: Always
+        - name: mcpServer.accessMode
+          value: restricted
+        - name: mcpServer.transport
+          value: sse
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
